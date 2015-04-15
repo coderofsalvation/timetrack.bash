@@ -9,7 +9,13 @@ Aimed to lazy unix ninjas who spent lot of time in the console.
 
 # Install
 
-    $ wget https://github.com/coderofsalvation/timetrack.bash/blob/master/timetrack
+First enable shared history of your terminals:
+
+    $ curl https://raw.githubusercontent.com/coderofsalvation/timetrack.bash/master/.bashrc >> ~/.bashrc
+
+Then download and run timetrack
+
+    $ wget https://raw.githubusercontent.com/coderofsalvation/timetrack.bash/master/timetrack 
     $ chmod 755 timetrack
     $ ./timetrack 
     please modify ~/.timetrack.conf before running timetrack as a crontab
@@ -56,10 +62,11 @@ Or to get nice outputin the console:
 
 # Great! and now what?
 
-Now you can import it into gnumeric or excel as a csv:
+The output might need a bit of massaging.
+So you can import it into gnumeric or excel as a csv:
 
     $ cat ~/.timetrack-*.conf /tmp/allinone.csv
 
 ## Dependencies
 
-* bash
+* bash 4
