@@ -44,9 +44,9 @@ The csvfiles are produced as ~/.timetrack-mm-yyyy.csv
 Check it out, it will probably look something like this:
     
     $ cat ~/.timetrack-*.csv 
-    15/04/15,12:47:01,"deploying project","deployment","company foo"
-    15/04/15,12:47:01,"git / svn","version management","company foo"
-    15/04/15,15:33:28,"working on code in editor","developing","company foo"
+    15/04/15,12:47:01,"deploying project","deployment","company foo","git push chucknorris"
+    15/04/15,12:47:01,"git / svn","version management","company foo","git add foo"
+    15/04/15,15:33:28,"working on code in editor","developing","company foo","vi loop.cs"
 
 # What happened over there?
 
