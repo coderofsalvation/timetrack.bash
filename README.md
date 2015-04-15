@@ -77,13 +77,15 @@ Optionally use `CMD_IN_CSV=1 /././timetrack track` to include the matching comma
 
 ## Sweet! What else?
 
-Optionally you can manually add entries to the csv, for example a git- or svn-hook could call this:
+Optionally you can manually add entries to the csv: 
 
     timetrack add '"deploying project","deployment","project foo",""'
 
+For this could be done from withing a git- or svn-hook.
+
 ## Great! and now what?
 
-So you can import it into gnumeric or excel as a csv:
+You can import it into gnumeric or excel as a csv and impress your manager:
 
     $ cat ~/.timetrack-*.conf /tmp/allinone.csv
 
@@ -92,7 +94,7 @@ So you can import it into gnumeric or excel as a csv:
 You can extend the behaviour of timetrack. Lets say you 
 want to notify matches and add to a REST api as well:
 
-  ON_MATCH='DISPLAY=:0.0 notify-send' ON_ADD="postcurl" timetrack track 
+  ON_MATCH='DISPLAY=:0.0 notify-send' ON_ADD="posttowebservice" timetrack track 
 
 ## Todo
 
