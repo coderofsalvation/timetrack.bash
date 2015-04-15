@@ -92,7 +92,7 @@ You can import it into gnumeric or excel as a csv and impress your manager:
 
     $ cat ~/.timetrack-*.conf /tmp/allinone.csv
 
-## Advanced: Bashooks
+## Advanced: BashHooks
 
 You can extend the behaviour of timetrack. Lets say you 
 want to notify matches and add to a REST api as well:
