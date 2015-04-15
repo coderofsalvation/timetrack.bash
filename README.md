@@ -84,7 +84,7 @@ Optionally you can manually add entries to the csv:
 
     timetrack add '"deploying project","deployment","project foo",""'
 
-For this could be done from withing a git- or svn-hook.
+This could be done from withing a git- or svn-hook for instance.
 
 ## Great! and now what?
 
