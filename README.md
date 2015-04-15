@@ -28,7 +28,7 @@ Now add this line to ~/.timetrack.conf (which timetrack created) :
 
     patterns['git push|svn update']='git / svn,version management,company foo'
 
-Now suppose timetrack finds a match ('git push' e.g.) in your Bashhistory.
+Timetrack will scan your bash history, and at some point it will find a match ('git push' e.g.).
 In such case it will append the following line to `~/.timetrack-mm-yyyy.csv`:
 
     21/13/15,00:03:45,"git / svn","version management","company foo"
