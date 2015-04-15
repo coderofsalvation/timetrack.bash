@@ -4,8 +4,17 @@ Effortless timetracking to csv based on bash history + cronjob and patternmatchi
 
 <center><img alt="" src=".res/anim.gif"/></center>
 
-Timetrack.bash will check your bashhistory periodically and maintain a csv.
-Aimed to lazy unix ninjas who spent lot of time in the console.
+Timetrack.bash will scan your bashhistory periodically and maintain a csv.
+This can be very handy if you spend a lot of time in the console.
+
+# Attention UNIX ninjas 
+
+    Usage:
+
+      timetrack track          # scans bash history (usually called by cron)
+      timetrack show           # pretty console overview of timelog 
+      timetrack add <csvstr>   # manually add csv-row
+      timetrack createconfig   # creates config
 
 # Install
 
@@ -17,23 +26,35 @@ Then download and run timetrack
 
     $ wget https://raw.githubusercontent.com/coderofsalvation/timetrack.bash/master/timetrack 
     $ chmod 755 timetrack
-    $ ./timetrack 
-    please modify ~/.timetrack.conf before running timetrack as a crontab
+    $ ./timetrack createconfig 
+    created ~/.timetrack.conf
 
-Now lets modify some patterns and add the cronjob 
-
-# Modify patterns
+# Add patterns to scan for
 
 Now add this line to ~/.timetrack.conf (which timetrack created) :
 
     patterns['git push|svn update']='git / svn,version management,company foo'
 
-Now suppose timetrack finds a match ('git push' e.g.) in your Bashhistory.
-In such case it will append the following line to `~/.timetrack-mm-yyyy.csv`:
+# Try it:
 
-    21/13/15,00:03:45,"git / svn","version management","company foo"
+    $ git push chucknorris # lets create some history
+    $ CMD_IN_CSV=1 timetrack track
+
+The csvfiles are produced as ~/.timetrack-mm-yyyy.csv
+Check it out, it will probably look something like this:
+    
+    $ cat ~/.timetrack-*.csv 
+    15/04/15,12:47:01,"deploying project","deployment","company foo"
+    15/04/15,12:47:01,"git / svn","version management","company foo"
+    15/04/15,15:33:28,"working on code in editor","developing","company foo"
+
+# What happened over there?
+
+Timetrack scans your recent bash history, and it found a match ('git push' e.g.).
+In such case it will push it to the csv and call the BashHooks (see below).
 
 Got it?
+Now lets get this baby always running in the background
 
 # Add a cronjob
 
@@ -41,17 +62,15 @@ Finally put it in your cronjob (`crontab -e`):
 
     */15 * * * * /absolute/path/to/timetrack track 
 
-# Sweet! What will it generate?
+Optionally use `CMD_IN_CSV=1 /././timetrack track` to include the matching commands as well.
 
-It will generate (customizable) csv's like so:
+# Sweet! What else?
 
-    $ cat ~/.timetrack-04-2015.csv 
-    15/04/15,12:47:01,"deploying project","deployment","company foo"
-    15/04/15,12:47:01,"git / svn","version management","company foo"
-    15/04/15,15:33:28,"working on code in editor","developing","company foo"
+Optionally you can manually add entries to the csv, for example a git- or svn-hook could call this:
 
+    timetrack add '"deploying project","deployment","project foo",""'
 
-Or to get nice outputin the console:
+# Quick overview of timelog 
 
     $ timetrack show 
     date      time      description                type                client
@@ -62,10 +81,16 @@ Or to get nice outputin the console:
 
 # Great! and now what?
 
-The output might need a bit of massaging.
 So you can import it into gnumeric or excel as a csv:
 
     $ cat ~/.timetrack-*.conf /tmp/allinone.csv
+
+# Advanced: Bashooks
+
+You can extend the behaviour of timetrack. Lets say you 
+want to notify matches and add to a REST api as well:
+
+  ON_MATCH='DISPLAY=:0.0 notify-send' ON_ADD="postcurl" timetrack track 
 
 ## Dependencies
 

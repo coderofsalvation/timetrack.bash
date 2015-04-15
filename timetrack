@@ -2,14 +2,31 @@
 #
 # passive timetrack utility based on bash history and cron
 #
-# Usage: run timetrack once, edit ~/.timetrack.conf, and add this cronjob:
+# Usage:
 # 
-#  * * * * * /absolute/path/to/timetrack track 
-#
-# csvfiles are produced as ~/.timetrack-mm-yyyy.csv
-# use 'timetrack show' to see a nice overview of those
-#
-#  Copyright (C) 2015, Leon van Kammen / Coder of Salvation 
+#   timetrack track          # scans bash history (usually called by cron)
+#   timetrack show           # pretty console overview of timelog 
+#   timetrack add <csvstr>   # manually add csv-row
+#   timetrack createconfig   # creates config
+#   (to include the cmds in the csv use: 'CMD_IN_CSV=1 timetrack track' )
+# 
+# Installation: 
+# 
+#   run timetrack once, edit ~/.timetrack.conf, and add this cronjob:
+# 
+#   * * * * * /absolute/path/to/timetrack track 
+# 
+#   csvfiles are produced as ~/.timetrack-mm-yyyy.csv
+#   use 'timetrack show' to see a nice overview of those
+# 
+# BashHooks:
+# 
+#   You can extend the behaviour of timetrack. Lets say you 
+#   want to notify matches and add to a REST api as well:
+# 
+#   ON_MATCH='DISPLAY=:0.0 notify-send' ON_ADD="postcurl" timetrack track 
+# 
+# Copyright (C) 2015, Leon van Kammen / Coder of Salvation 
 #  
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Affero General Public License as
@@ -41,14 +58,21 @@ patterns['git|svn']='git / svn,version management,company foo'
 # source config
 #
 [[ ! -f ~/.timetrack.conf ]] && {
-  echo "$config_example" > ~/.timetrack.conf 
-  echo "please modify ~/.timetrack.conf before running timetrack as a crontab"
+  echo "please run 'timetrack createconfig' first and edit ~/.timetrack.conf as desired"
   exit 1;
 }
 source ~/.timetrack.conf
 
+createconfig(){
+  [[ -f ~/.timetrack.conf ]] && { 
+    read -p "overwrite current config? (y/n)" overwrite; 
+    [[ ! "$overwrite" == "y" ]] && echo "aborted" && exit 1;
+  }
+  echo "$config_example" > ~/.timetrack.conf && echo "created ~/.timetrack.conf"
+}
+
 parse_cmd(){
-  echo "$1" | awk '{ $1=$2=$3=$4=""; print $0 }'
+  echo "$1" | awk '{ $1=$2=$3=""; print $0 }' | sed -e 's/^ *//g' -e 's/ *$//g'
 }
 
 parse_date(){
@@ -60,24 +84,32 @@ track(){
   log="$(<$csvout)"
   history | tail -n$maxlines > $TMP.history 
   while read line; do 
-    id="${line/^ //}"; id="${id/ */}"; [[ ! "$id" =~ ^[0-9] ]] && continue
     for pattern in "${!patterns[@]}"; do 
       cmd="$(parse_cmd "$line")"; 
       if [[ "$cmd" =~ $pattern ]]; then 
-        item="$(echo "$(parse_date "$line"),\"$csv\"")" 
+        [[ -n $CMD_IN_CSV ]] && match=",\"${cmd/\"/\"\"}\"" || match=""
+        item="$(echo "$(parse_date "$line"),\"$csv\",${match:0:70}\"")" 
         csv="${patterns["$pattern"]}"; csv="${csv//,/\",\"}"
-        [[ ! "$csvout" =~ "$item" ]] && echo "$item" >> "$csvout" || echo "nee: $item"
+        [[ -f $ON_MATCH ]] && ${ON_MATCH} "$item"
+        NODATE=1 add "$item" >> "$csvout"
       fi
     done
   done < $TMP.history
   cat "$csvout" | sort | uniq > $TMP.csv && mv "$TMP.csv" "$csvout"  # remove duplicates
 }
 
-show(){
-  { echo -e "$csvcolumns\n--------\n"; cat ~/.timetrack-*.csv; }             \
-    | sed 's/""/" "/g' | gawk -vFS='^"|","|"$|",|,"|,'                  \
-      '{out=""; for(i=1;i<NF+1&&i<max;i++) out=out"\t"$i; print out }'  \
-      max=99999 | column -t -s $'\t'                                    
+add(){
+  csvout=~/".timetrack-$( date +%m-%Y).csv"; [[ ! -f "$csvout" ]] && touch "$csvout"
+  [[ ! -n $NODATE ]] && line="$(date +%y/%m/%d),$(date +%H:%M:%S),$1" || line="$1"
+  echo "$line" >> "$csvout"
+  [[ -f $ON_ADD ]] && ${ON_ADD} "$line"
 }
 
-if [[ -n "$1" ]]; then "$@"; else grep -A2 "^# Usage: " "$0" | sed 's/^# //g'; fi
+show(){
+  { echo -e "$csvcolumns\n--------\n"; cat ~/.timetrack-*.csv; }             \
+    | sed 's/,"",/," ",/g' | gawk -vFS='^"|","|"$|",|,"|,'                  \
+      '{out=""; for(i=1;i<NF+1&&i<max;i++) out=out"\t"$i; print out }'  \
+      max=99999 | sed 's/""/"/g' | column -t -s $'\t'                                    
+}
+
+if [[ -n "$1" ]]; then "$@"; else grep -A24 "^# Usage:" "$0" | sed 's/^# //g'; fi
