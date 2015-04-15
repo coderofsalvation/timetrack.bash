@@ -94,7 +94,7 @@ You can import it into gnumeric or excel as a csv and impress your manager:
 You can extend the behaviour of timetrack. Lets say you 
 want to notify matches and add to a REST api as well:
 
-  ON_MATCH='DISPLAY=:0.0 notify-send' ON_ADD="posttowebservice" timetrack track 
+    ON_MATCH='DISPLAY=:0.0 notify-send' ON_ADD="posttowebservice" timetrack track 
 
 ## Todo
 
