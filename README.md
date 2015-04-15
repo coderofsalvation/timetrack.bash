@@ -4,8 +4,8 @@ Effortless timetracking to csv based on bash history + cronjob and patternmatchi
 
 <center><img alt="" src=".res/anim.gif"/></center>
 
-Timetrack.bash will scan your bashhistory periodically and maintain a csv.
-This can be very handy if you spend a lot of time in the console.
+Timetrack.bash will scan your bashhistory periodically on tags and produces a csv.
+This can be very handy to get overview, when you spend a lot of time in the console.
 The idea is that when you cd to a certain folder, or perform a certain command, it should end up in a timelog.
 
 ## Attention UNIX ninjas 
@@ -35,10 +35,14 @@ Then download and run timetrack
 Now add this line to ~/.timetrack.conf (which timetrack created) :
 
     patterns['git push|svn update']='git / svn,version management,company foo'
-
+    patterns['eng4/v2']='working on engine v2,development,company Y'
+    
 ## Try it:
 
-    $ git push chucknorris # lets create some history
+    # lets create some history, the first 2 commands will fail obviously
+    $ git push chucknorris
+    $ cd /var/www/eng4/v2
+    $ vi Engine.cs
     $ CMD_IN_CSV=1 timetrack track
     $
 
@@ -46,19 +50,17 @@ Now add this line to ~/.timetrack.conf (which timetrack created) :
 ## View the result 
 
     $ timetrack show 
-    date      time      description                type                client
+    date      time      description                 type                client
     --------
-    15/04/15  12:47:01  deploying project          deployment          company foo
-    15/04/15  12:47:01  git / svn                  version management  company foo
-    15/04/15  15:33:28  working on code in editor  developing          company foo
+    15/04/15  12:33:27  git / svn                   version management  company foo
+    15/04/15  15:33:28  working on engine v2        development         company Y
 
 The csvfiles are produced as ~/.timetrack-mm-yyyy.csv
 Check it out, it will probably look something like this:
     
     $ cat ~/.timetrack-*.csv 
-    15/04/15,12:47:01,"deploying project","deployment","company foo","git push chucknorris"
-    15/04/15,12:47:01,"git / svn","version management","company foo","git add foo"
-    15/04/15,15:33:28,"working on code in editor","developing","company foo","vi loop.cs"
+    15/04/15,12:33:27,"git / svn","version management","company foo","git add foo"
+    15/04/15,15:33:28,"working on engine v2","development","company Y","vi Engine.cs"
 
 ## What happened over there?
 
