@@ -39,7 +39,7 @@ Got it?
 
 Finally put it in your cronjob (`crontab -e`):
 
-    * * * * * /absolute/path/to/timetrack track 
+    */5 * * * * /absolute/path/to/timetrack track 
 
 # Sweet! What will it generate?
 
