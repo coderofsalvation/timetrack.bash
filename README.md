@@ -73,7 +73,7 @@ Finally put it in your cronjob (`crontab -e`):
 
     */15 * * * * /absolute/path/to/timetrack track 
 
-Optionally use `CMD_IN_CSV=1 /././timetrack track` to include the matching commands as well.
+Optionally use `CMD_IN_CSV=1 /././timetrack track` to include the matching commands as well (warning:more verbose).
 
 ## Sweet! What else?
 
