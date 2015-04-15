@@ -41,6 +41,16 @@ Now add this line to ~/.timetrack.conf (which timetrack created) :
     $ CMD_IN_CSV=1 timetrack track
     $
 
+
+## View the result 
+
+    $ timetrack show 
+    date      time      description                type                client
+    --------
+    15/04/15  12:47:01  deploying project          deployment          company foo
+    15/04/15  12:47:01  git / svn                  version management  company foo
+    15/04/15  15:33:28  working on code in editor  developing          company foo
+
 The csvfiles are produced as ~/.timetrack-mm-yyyy.csv
 Check it out, it will probably look something like this:
     
@@ -70,15 +80,6 @@ Optionally use `CMD_IN_CSV=1 /././timetrack track` to include the matching comma
 Optionally you can manually add entries to the csv, for example a git- or svn-hook could call this:
 
     timetrack add '"deploying project","deployment","project foo",""'
-
-## Quick overview of timelog 
-
-    $ timetrack show 
-    date      time      description                type                client
-    --------
-    15/04/15  12:47:01  deploying project          deployment          company foo
-    15/04/15  12:47:01  git / svn                  version management  company foo
-    15/04/15  15:33:28  working on code in editor  developing          company foo
 
 ## Great! and now what?
 
