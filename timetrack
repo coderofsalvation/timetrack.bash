@@ -14,7 +14,7 @@
 # 
 #   run timetrack once, edit ~/.timetrack.conf, and add this cronjob:
 # 
-#   * * * * * /absolute/path/to/timetrack track 
+#   */15 * * * * /absolute/path/to/timetrack track 
 # 
 #   csvfiles are produced as ~/.timetrack-mm-yyyy.csv
 #   use 'timetrack show' to see a nice overview of those
