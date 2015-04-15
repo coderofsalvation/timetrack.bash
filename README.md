@@ -6,6 +6,7 @@ Effortless timetracking to csv based on bash history + cronjob and patternmatchi
 
 Timetrack.bash will scan your bashhistory periodically and maintain a csv.
 This can be very handy if you spend a lot of time in the console.
+The idea is that when you cd to a certain folder, or perform a certain command, it should end up in a timelog.
 
 ## Attention UNIX ninjas 
 
