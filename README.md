@@ -65,7 +65,7 @@ This is just a pretty printed version of the generated csvfiles at ~/.timetrack-
 Timetrack scans your recent bash history, and it found a match ('git push' e.g.).
 In such case it will push it to the csv and call the BashHooks (see below).
 
-Also appending a keyword as comment (`# opensource`) will trigger an entry in the log.
+Also a comment (`# opensource`) will trigger an entry in the log.
 This can be handy to indicate the switch to another project (contextswitching e.g.).
 
 Got it?
