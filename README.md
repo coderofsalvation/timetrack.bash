@@ -34,13 +34,15 @@ Then download and run timetrack
 
 Now add this line to ~/.timetrack.conf (which timetrack created) :
 
-    patterns['git push|svn update']='git / svn,version management,company foo'
+    patterns['git']='git / svn,version management,internal'
+    patterns['opensource']='opensource work / research,opensource tooling,internal'
     patterns['eng4/v2']='working on engine v2,development,company Y'
     
 ## Try it:
 
-    # lets create some history, the first 2 commands will fail obviously
-    $ git push chucknorris
+lets create some history, the first 2 commands will fail obviously
+
+    $ git push origin master # opensource 
     $ cd /var/www/eng4/v2
     $ vi Engine.cs
     $ CMD_IN_CSV=1 timetrack track
@@ -52,20 +54,19 @@ Now add this line to ~/.timetrack.conf (which timetrack created) :
     $ timetrack show 
     date      time      description                 type                client
     --------
-    15/04/15  12:33:27  git / svn                   version management  company foo
+    15/04/15  12:33:27  git / svn                   version management  internal
+    15/04/15  12:33:27  opensource work / research  opensource tooling  internal
     15/04/15  15:33:28  working on engine v2        development         company Y
 
-The csvfiles are produced as ~/.timetrack-mm-yyyy.csv
-Check it out, it will probably look something like this:
-    
-    $ cat ~/.timetrack-*.csv 
-    15/04/15,12:33:27,"git / svn","version management","company foo","git add foo"
-    15/04/15,15:33:28,"working on engine v2","development","company Y","vi Engine.cs"
+This is just a pretty printed version of the generated csvfiles at ~/.timetrack-mm-yyyy.csv
 
 ## What happened over there?
 
 Timetrack scans your recent bash history, and it found a match ('git push' e.g.).
 In such case it will push it to the csv and call the BashHooks (see below).
+
+Also appending a keyword as comment (`# opensource`) will trigger an entry in the log.
+This can be handy to indicate the switch to another project (contextswitching e.g.).
 
 Got it?
 Now lets get this baby always running in the background
@@ -101,7 +102,8 @@ want to notify matches and add to a REST api as well:
 
 ## Todo
 
-* more testing 
+* DO: more testing 
+* DONTS: stats can be generated using other csv utils / spreadsheet editors
 
 ## Dependencies
 
