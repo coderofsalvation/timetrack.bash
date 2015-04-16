@@ -84,25 +84,25 @@ track(){
   log="$(<$csvout)"
   history | tail -n$maxlines > $TMP.history 
   while read line; do 
+    cmd="$(parse_cmd "$line")"; 
     for pattern in "${!patterns[@]}"; do 
-      cmd="$(parse_cmd "$line")"; 
       if [[ "$cmd" =~ $pattern ]]; then 
-        [[ -n $CMD_IN_CSV ]] && match=",\"${cmd/\"/\"\"}\"" || match=""
-        item="$(echo "$(parse_date "$line"),\"$csv\",${match:0:70}\"")" 
         csv="${patterns["$pattern"]}"; csv="${csv//,/\",\"}"
-        [[ -f $ON_MATCH ]] && ${ON_MATCH} "$item"
+        [[ -n $CMD_IN_CSV ]] && match=",\"${cmd/\"/\"\"}\"" || match=""
+        item="$(parse_date "$line"),\"$csv\"${match:0:70}" 
+        [[ -n $ON_MATCH ]] && ${ON_MATCH} "$item"
         NODATE=1 add "$item" >> "$csvout"
       fi
     done
   done < $TMP.history
-  cat "$csvout" | sort | uniq > $TMP.csv && mv "$TMP.csv" "$csvout"  # remove duplicates
+  cat "$csvout" | uniq > $TMP.csv && mv "$TMP.csv" "$csvout"  # remove duplicates
 }
 
 add(){
   csvout=~/".timetrack-$( date +%m-%Y).csv"; [[ ! -f "$csvout" ]] && touch "$csvout"
-  [[ ! -n $NODATE ]] && line="$(date +%y/%m/%d),$(date +%H:%M:%S),$1" || line="$1"
-  echo "$line" >> "$csvout"
-  [[ -f $ON_ADD ]] && ${ON_ADD} "$line"
+  [[ ! -n $NODATE ]] && csvline="$(date +%y/%m/%d),$(date +%H:%M:%S),$1" || csvline="$1"
+  echo -e "$csvline" >> "$csvout"
+  [[ -n $ON_ADD ]] && ${ON_ADD} "$csvline"
 }
 
 show(){
