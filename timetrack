@@ -54,15 +54,6 @@ patterns['vi|vim|emacs']='working on code in editor,developing,company foo'
 patterns['git|svn']='git / svn,version management,company foo'
 "
 
-#
-# source config
-#
-[[ ! -f ~/.timetrack.conf ]] && {
-  echo "please run 'timetrack createconfig' first and edit ~/.timetrack.conf as desired"
-  exit 1;
-}
-source ~/.timetrack.conf
-
 createconfig(){
   [[ -f ~/.timetrack.conf ]] && { 
     read -p "overwrite current config? (y/n)" overwrite; 
@@ -70,6 +61,15 @@ createconfig(){
   }
   echo "$config_example" > ~/.timetrack.conf && echo "created ~/.timetrack.conf"
 }
+
+#
+# source config
+#
+[[ ! -f ~/.timetrack.conf ]] && {
+  createconfig
+  exit 1;
+}
+source ~/.timetrack.conf
 
 parse_cmd(){
   echo "$1" | awk '{ $1=$2=$3=""; print $0 }' | sed -e 's/^ *//g' -e 's/ *$//g'

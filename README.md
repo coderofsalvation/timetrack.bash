@@ -27,7 +27,7 @@ Then download and run timetrack
 
     $ wget https://raw.githubusercontent.com/coderofsalvation/timetrack.bash/master/timetrack 
     $ chmod 755 timetrack
-    $ ./timetrack createconfig 
+    $ timetrack
     created ~/.timetrack.conf
 
 ## Add patterns to scan for
